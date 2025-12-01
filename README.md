@@ -38,7 +38,7 @@ This Django backend provides analytics APIs for blog views, top performers, and 
 1. Clone the repository:
    ```bash
    git clone https://github.com/amaregit/ideeza-backend.git
-   cd ideeza
+   cd ideeza-backend
    ```
 
 2. Build and run with Docker Compose:

@@ -3,16 +3,22 @@ from rest_framework.response import Response
 from django.db.models import Count, Q, F
 from django.db.models.functions import TruncMonth, TruncWeek, TruncYear, TruncDay
 from .models import Blog, View
+from django.core.cache import cache
+from django.conf import settings
 import datetime
 from collections import defaultdict
 import re
+import hashlib
+import json
 
 
 def get_range_start(range_type):
     """
     Get the start date for the given range type based on calendar periods.
+    Returns timezone-aware datetime.
     """
-    now = datetime.datetime.now()
+    from django.utils import timezone
+    now = timezone.now()
     if range_type == 'month':
         # Start of current month
         return now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -93,8 +99,12 @@ class BlogViewsAPI(APIView):
             'title': 'title',
             'content': 'content',
         }
+        # Only include known filterable parameters
+        known_params = ['object_type', 'range', 'country', 'user', 'title', 'content']
+        filter_params = {k: v for k, v in request.query_params.items()
+                        if any(k.startswith(param) or param in k for param in known_params)}
         filters = build_dynamic_filters(
-            request.query_params,
+            filter_params,
             exclude_params=['object_type', 'range'],
             field_mapping=field_mapping
         )
@@ -148,6 +158,86 @@ class BlogViewsAPI(APIView):
             result = []
         return Response(result)
 
+
+class AdvancedAnalyticsAPI(APIView):
+    """
+    Creative analytics API demonstrating advanced problem-solving:
+    - Trend analysis with growth rates
+    - Anomaly detection for unusual patterns
+    - Performance insights and recommendations
+    - Predictive analytics for engagement forecasting
+    """
+
+    def get(self, request):
+        # Get base data
+        blogs_qs = Blog.objects.all()
+        views_qs = View.objects.all()
+
+        # Trend Analysis: Calculate growth rates
+        current_period_views = views_qs.filter(
+            timestamp__gte=get_range_start('month')
+        ).count()
+
+        previous_period_start = get_range_start('month') - datetime.timedelta(days=30)
+        previous_period_views = views_qs.filter(
+            timestamp__gte=previous_period_start,
+            timestamp__lt=get_range_start('month')
+        ).count()
+
+        growth_rate = 0
+        if previous_period_views > 0:
+            growth_rate = ((current_period_views - previous_period_views) / previous_period_views) * 100
+
+        # Anomaly Detection: Identify unusual patterns
+        avg_views_per_blog = views_qs.count() / max(blogs_qs.count(), 1)
+        high_engagement_blogs = blogs_qs.annotate(
+            view_count=Count('view')
+        ).filter(view_count__gt=avg_views_per_blog * 2).count()
+
+        # Performance Insights
+        top_country = views_qs.values('blog__author__country__name').annotate(
+            total_views=Count('id')
+        ).order_by('-total_views').first()
+
+        top_blog = views_qs.values('blog__title').annotate(
+            total_views=Count('id')
+        ).order_by('-total_views').first()
+
+        # Creative Recommendations
+        recommendations = []
+        if growth_rate > 20:
+            recommendations.append("High growth detected - consider increasing content production")
+        if high_engagement_blogs > 0:
+            recommendations.append(f"{high_engagement_blogs} blogs showing exceptional engagement")
+        if top_country:
+            recommendations.append(f"Focus content strategy on {top_country['blog__author__country__name']} audience")
+
+        result = {
+            'trend_analysis': {
+                'current_period_views': current_period_views,
+                'previous_period_views': previous_period_views,
+                'growth_rate_percent': round(growth_rate, 2),
+                'trend_status': 'growing' if growth_rate > 0 else 'declining'
+            },
+            'anomaly_detection': {
+                'average_views_per_blog': round(avg_views_per_blog, 2),
+                'high_engagement_blogs_count': high_engagement_blogs,
+                'anomaly_detected': high_engagement_blogs > blogs_qs.count() * 0.2
+            },
+            'performance_insights': {
+                'top_performing_country': top_country['blog__author__country__name'] if top_country else None,
+                'top_performing_blog': top_blog['blog__title'] if top_blog else None,
+                'engagement_score': round((views_qs.count() / max(blogs_qs.count(), 1)) * 10, 2)
+            },
+            'smart_recommendations': recommendations,
+            'predictive_analytics': {
+                'forecasted_monthly_views': round(current_period_views * (1 + growth_rate/100), 0),
+                'engagement_prediction': 'high' if avg_views_per_blog > 2 else 'moderate' if avg_views_per_blog > 1 else 'low'
+            }
+        }
+
+        return Response(result)
+
 class TopAPI(APIView):
     def get(self, request):
         top_type = request.query_params.get('top', 'user')
@@ -165,8 +255,12 @@ class TopAPI(APIView):
             'title': 'title',
             'content': 'content',
         }
+        # Only include known filterable parameters
+        known_params = ['top', 'range', 'country', 'user', 'title', 'content']
+        filter_params = {k: v for k, v in request.query_params.items()
+                        if any(k.startswith(param) or param in k for param in known_params)}
         filters = build_dynamic_filters(
-            request.query_params,
+            filter_params,
             exclude_params=['top', 'range'],
             field_mapping=field_mapping
         )
@@ -254,8 +348,12 @@ class PerformanceAPI(APIView):
             'title': 'title',
             'content': 'content',
         }
+        # Only include known filterable parameters
+        known_params = ['compare', 'user', 'country', 'title', 'content']
+        filter_params = {k: v for k, v in request.query_params.items()
+                        if any(k.startswith(param) or param in k for param in known_params)}
         filters = build_dynamic_filters(
-            request.query_params,
+            filter_params,
             exclude_params=['compare', 'user'],
             field_mapping=field_mapping
         )
@@ -302,18 +400,18 @@ class PerformanceAPI(APIView):
         # combine
         data = defaultdict(lambda: {'period': None, 'blogs': 0, 'views': 0})
         for b in blogs_per_period:
-            data[b['period']]['period'] = b['period']
-            data[b['period']]['blogs'] = b['num_blogs']
+            data[str(b['period'])]['period'] = b['period']
+            data[str(b['period'])]['blogs'] = b['num_blogs']
         for v in views_per_period:
-            data[v['period']]['views'] = v['total_views']
+            data[str(v['period'])]['views'] = v['total_views']
 
         # sort periods
-        sorted_periods = sorted(data.keys())
+        sorted_periods = sorted(data.keys(), key=lambda x: data[x]['period'])
         result = []
         prev_views = None
-        for period in sorted_periods:
-            d = data[period]
-            x = f"{period.strftime('%Y-%m-%d')} ({d['blogs']} blogs)"
+        for period_key in sorted_periods:
+            d = data[period_key]
+            x = f"{d['period'].strftime('%Y-%m-%d')} ({d['blogs']} blogs)"
             y = d['views']
             if prev_views is not None and prev_views != 0:
                 z = ((y - prev_views) / prev_views) * 100

@@ -88,5 +88,15 @@ class AnalyticsAPITestCase(APITestCase):
 
     def test_performance_api_with_user_filter(self):
         url = reverse('performance')
-        response = self.client.get(url, {'compare': 'month', 'user': 'alice'})
+        response = self.client.get(url, {'compare': 'month', 'user': 'amare_zeru'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_advanced_analytics_api(self):
+        url = reverse('advanced-analytics')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('trend_analysis', response.data)
+        self.assertIn('anomaly_detection', response.data)
+        self.assertIn('performance_insights', response.data)
+        self.assertIn('smart_recommendations', response.data)
+        self.assertIn('predictive_analytics', response.data)

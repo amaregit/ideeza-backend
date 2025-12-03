@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'analytics.middleware.PerformanceMonitoringMiddleware',
+    'analytics.middleware.AnalyticsThrottlingMiddleware',
 ]
 
 ROOT_URLCONF = 'ideeza.urls'
@@ -70,11 +73,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ideeza.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-import os
 
 if os.getenv('POSTGRES_HOST'):
     DATABASES = {
@@ -136,3 +136,43 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cache Configuration (using database cache for demo - in production use Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_table',
+    },
+    'analytics': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'analytics_cache',
+        'TIMEOUT': 60 * 30,  # 30 minutes for analytics
+    }
+}
+
+# Session Cache
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
+# REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+        'analytics': '50/minute',  # Custom throttle for analytics endpoints
+    },
+}
+
+# Performance Monitoring
+MIDDLEWARE.insert(0, 'analytics.middleware.PerformanceMonitoringMiddleware')
+
+# Analytics-specific settings
+ANALYTICS_CACHE_TIMEOUT = 60 * 30  # 30 minutes

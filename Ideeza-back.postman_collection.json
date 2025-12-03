@@ -1,0 +1,406 @@
+{
+	"info": {
+		"_postman_id": "bbd573db-1642-4412-8c1e-171ffb5e365e",
+		"name": "Ideeza-back",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24200034"
+	},
+	"item": [
+		{
+			"name": "top_blog",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/top/?top=blog&range=month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"top",
+						""
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "blog"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "country_view",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/blog-views/?object_type=country&range=month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"blog-views",
+						""
+					],
+					"query": [
+						{
+							"key": "object_type",
+							"value": "country"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_view",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "with_filtering",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/blog-views/?object_type=country&range=month&country__eq=Ethiopia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"blog-views",
+						""
+					],
+					"query": [
+						{
+							"key": "object_type",
+							"value": "country"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						},
+						{
+							"key": "country__eq",
+							"value": "Ethiopia"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "top_user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/top/?top=user&range=month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"top",
+						""
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "user"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "top_countries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/top/?top=country&range=month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"top",
+						""
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "country"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "monthly_performance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/performance/?compare=month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"performance",
+						""
+					],
+					"query": [
+						{
+							"key": "compare",
+							"value": "month"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_performance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/performance/?compare=month&user=amare_zeru",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"performance",
+						""
+					],
+					"query": [
+						{
+							"key": "compare",
+							"value": "month"
+						},
+						{
+							"key": "user",
+							"value": "amare_zeru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advanced_filter_multiple_country",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/blog-views/?object_type=country&range=month&country__in=Ethiopia,Kenya",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"blog-views",
+						""
+					],
+					"query": [
+						{
+							"key": "object_type",
+							"value": "country"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						},
+						{
+							"key": "country__in",
+							"value": "Ethiopia,Kenya"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advanced_filter_title_search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/blog-views/?object_type=user&range=month&title__icontains=django",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"blog-views",
+						""
+					],
+					"query": [
+						{
+							"key": "object_type",
+							"value": "user"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						},
+						{
+							"key": "title__icontains",
+							"value": "django"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advanced_filter_country_based_authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/top/?top=blog&range=month&country__eq=Ethiopia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"top",
+						""
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "blog"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						},
+						{
+							"key": "country__eq",
+							"value": "Ethiopia"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advanced_content_filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/performance/?compare=month&title__icontains=ai",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"performance",
+						""
+					],
+					"query": [
+						{
+							"key": "compare",
+							"value": "month"
+						},
+						{
+							"key": "title__icontains",
+							"value": "ai"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "advanced_filter_with_exclusion",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/analytics/top/?top=user&range=month&country__ne=Uganda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"analytics",
+						"top",
+						""
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "user"
+						},
+						{
+							"key": "range",
+							"value": "month"
+						},
+						{
+							"key": "country__ne",
+							"value": "Uganda"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

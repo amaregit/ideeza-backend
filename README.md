@@ -9,7 +9,7 @@ This Django backend provides analytics APIs for blog views, top performers, and 
 1. Clone the repository:
    ```bash
    git clone https://github.com/amaregit/ideeza-backend.git
-   cd ideeza
+   cd ideeza-backend
    ```
 
 2. Create a virtual environment:
@@ -118,6 +118,46 @@ Shows time-series performance.
     "z": "growth_percentage"
   }
 ]
+```
+
+### 4. /analytics/advanced/ (Creative Feature)
+
+**Advanced Analytics API** - Demonstrates creative problem-solving with intelligent insights:
+
+**Features:**
+- **Trend Analysis**: Growth rates and trend identification
+- **Anomaly Detection**: Identifies unusual engagement patterns
+- **Performance Insights**: Top performers and engagement scores
+- **Smart Recommendations**: Actionable content strategy suggestions
+- **Predictive Analytics**: Future engagement forecasting
+
+**Response:**
+```json
+{
+  "trend_analysis": {
+    "current_period_views": 15,
+    "previous_period_views": 0,
+    "growth_rate_percent": 0.0,
+    "trend_status": "growing"
+  },
+  "anomaly_detection": {
+    "average_views_per_blog": 3.0,
+    "high_engagement_blogs_count": 0,
+    "anomaly_detected": false
+  },
+  "performance_insights": {
+    "top_performing_country": "Ethiopia",
+    "top_performing_blog": "Ethiopian Coffee Culture & Tech Innovation",
+    "engagement_score": 30.0
+  },
+  "smart_recommendations": [
+    "Focus content strategy on Ethiopia audience"
+  ],
+  "predictive_analytics": {
+    "forecasted_monthly_views": 15.0,
+    "engagement_prediction": "high"
+  }
+}
 ```
 
 ## Models

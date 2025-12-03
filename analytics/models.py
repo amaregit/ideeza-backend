@@ -81,7 +81,6 @@ class View(models.Model):
 class AnalyticsSnapshot(models.Model):
     """
     Pre-aggregated analytics data for performance.
-    This demonstrates backend lead thinking by pre-computing expensive analytics.
     """
     SNAPSHOT_TYPES = [
         ('daily', 'Daily'),
@@ -123,7 +122,6 @@ class AnalyticsSnapshot(models.Model):
 class QueryOptimization(models.Model):
     """
     Tracks query performance and optimization opportunities.
-    Backend lead feature for monitoring and improving system performance.
     """
     endpoint = models.CharField(max_length=200)
     method = models.CharField(max_length=10)

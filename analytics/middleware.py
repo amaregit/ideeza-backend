@@ -9,8 +9,6 @@ logger = logging.getLogger('analytics')
 class PerformanceMonitoringMiddleware:
     """
     Middleware to monitor API performance, cache analytics data, and log metrics.
-    This demonstrates backend lead thinking by implementing intelligent caching
-    and performance monitoring.
     """
 
     def __init__(self, get_response):

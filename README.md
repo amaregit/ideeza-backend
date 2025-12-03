@@ -122,7 +122,7 @@ Shows time-series performance.
 
 ### 4. /analytics/advanced/ (Creative Feature)
 
-**Advanced Analytics API** - Demonstrates creative problem-solving with intelligent insights:
+**Advanced Analytics API** - Intelligent insights:
 
 **Features:**
 - **Trend Analysis**: Growth rates and trend identification
